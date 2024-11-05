@@ -28,32 +28,40 @@ The project followed these major steps:
 Model A was trained on the downscaled 128x128 images. The architecture used is a pre-trained **VGG16** model with the last layer modified to classify between cats and dogs.
 
 - **Transformations Applied**: Resize to 128x128, random horizontal flip, rotation within 15 degrees, color jitter, and normalization.
+
 - **Training and Validation Loss**:
 
-![Training and Validation Loss](./figures/training_validation_loss_A.png)
+    ![Training and Validation Loss](./figures/training_validation_loss_A.png)
 
-- **Validation Metrics**: 
+- **Validation Metrics**:
 
-![Validation Metrics](./figures/validation_metrics_A.png)
+    ![Validation Metrics](./figures/validation_metrics_A.png)
 
 - **Validation Predictions**: 
 
-![Validation Predictions](./figures/validation_predictions_A.png)
+    ![Validation Predictions](./figures/validation_predictions_A.png)
 
 - **Confusion Matrix**: 
 
-![Confusion Matrix A](./figures/confusion_matrix_A.png)
+    ![Confusion Matrix A](./figures/confusion_matrix_A.png)
+
 
 ## SRGAN Training
 
 The SRGAN model was trained for **150 epochs** to upscale low-resolution (32x32) images to high-resolution (128x128) images.
 
 - **Low-Resolution vs High-Resolution Examples**: 
-![Original and Downscaled Images](./figures/srgan_train_data_original_and_downscaled_images.png)
-- **Validation Sample Results**: 
-![Validation Samples](./figures/srgan_validation_sample_images.png)
-- **Generator and Discriminator Loss Plot**: 
-![SRGAN Loss Plot](./figures/srgan_loss_plot.png)
+  - These images showcase the difference between the original high-resolution images and their downscaled versions used for SRGAN training. The downscaled images are clearly lower in quality, with significant loss of details, whereas the high-resolution images retain much more texture and clarity. This contrast emphasizes the importance of super-resolution techniques in restoring visual quality for better analysis.
+    ![Original and Downscaled Images](./figures/srgan_train_data_original_and_downscaled_images.png)
+
+- **Validation Sample Results**:
+  - The validation samples demonstrate the effectiveness of SRGAN in restoring the high-resolution features of the images. The super-resolved output closely resembles the ground truth high-resolution images, preserving crucial details such as fur texture, facial features, and overall sharpness. The comparison between low-resolution inputs, SRGAN-generated outputs, and high-resolution ground truths highlights how SRGAN improves visual quality significantly, making it valuable for subsequent tasks like classification.
+    ![Validation Samples](./figures/srgan_validation_sample_images.png)
+
+- **Generator and Discriminator Loss Plot**:
+  - The generator and discriminator loss curves during training show a steady decrease in both losses, indicating successful adversarial training. The discriminator loss was scaled by 100 to better visualize its trend alongside the generator loss. The consistent decrease in generator loss signifies the improvement in generating realistic high-resolution images over time. The occasional spikes in discriminator loss are indicative of moments where the generator significantly improved, forcing the discriminator to adapt.
+    ![SRGAN Loss Plot](./figures/srgan_loss_plot.png)
+
 
 ## Training Model B: Using Generated Images
 
@@ -95,7 +103,7 @@ The performance of both models, A and B, was compared on the validation dataset:
 ### Observations
 - Model B, which was trained using SRGAN-generated high-resolution images, showed slightly better performance compared to Model A. The validation loss for Model B was significantly lower (0.1361 compared to 0.2068 for Model A), indicating that the model was able to generalize better on the validation data.
 - The validation accuracy, F1 score, and AUC for Model B were all higher than those for Model A, though the difference was not substantial (95.68% vs. 95.27%). This improvement demonstrates the positive effect of using SRGAN to enhance image quality, which ultimately helped the classifier to make more accurate predictions.
-- From the training and validation loss curves, it can be observed that both models had a decreasing trend in training loss, which indicates proper convergence. However, Model A's validation loss started to increase slightly towards the end, suggesting some overfitting, whereas Model B maintained a more stable validation loss, which is indicative of better generalization.
+- From the training and validation loss curves, it can be observed that the model B had a decreasing trend in training loss, which indicates proper convergence. However, Model A's validation loss started to increase slightly, suggesting some overfitting, whereas Model B maintained a more stable validation loss, which is indicative of better generalization.
 - The confusion matrices for the two models also provide insights into their performance. Model B made fewer incorrect predictions overall, with a reduction in misclassified images for both classes. Specifically, the number of incorrect predictions for cats decreased by 2, and for dogs, it decreased by 52 when using Model B compared to Model A. This suggests that the addition of SRGAN-generated images improved the classifier's ability to correctly identify both classes, particularly for the dog category.
 - The validation metrics, including accuracy, F1 score, and AUC, were closely aligned between the two models, but Model B consistently outperformed Model A. This indicates that while the improvements may not be drastic, they are consistent across different evaluation metrics, further emphasizing the utility of SRGAN-generated images in improving model performance.
 
