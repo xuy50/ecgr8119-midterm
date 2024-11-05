@@ -93,12 +93,14 @@ The performance of both models, A and B, was compared on the validation dataset:
 - **AUC**: 95.68%
 
 ### Observations
-- Model B, trained with SRGAN-generated images, achieved slightly better performance compared to Model A, indicating that the generated high-resolution images contributed positively to classification performance.
-- Although the differences between Model A and B are not very large, Model B does show relatively better results. This demonstrates that incorporating SRGAN-generated images is effective in improving the classifier's ability to distinguish between classes.
+- Model B, which was trained using SRGAN-generated high-resolution images, showed slightly better performance compared to Model A. The validation loss for Model B was significantly lower (0.1361 compared to 0.2068 for Model A), indicating that the model was able to generalize better on the validation data.
+- The validation accuracy, F1 score, and AUC for Model B were all higher than those for Model A, though the difference was not substantial (95.68% vs. 95.27%). This improvement demonstrates the positive effect of using SRGAN to enhance image quality, which ultimately helped the classifier to make more accurate predictions.
+- From the training and validation loss curves, it can be observed that both models had a decreasing trend in training loss, which indicates proper convergence. However, Model A's validation loss started to increase slightly towards the end, suggesting some overfitting, whereas Model B maintained a more stable validation loss, which is indicative of better generalization.
+- The confusion matrices for the two models also provide insights into their performance. Model B made fewer incorrect predictions overall, with a reduction in misclassified images for both classes. Specifically, the number of incorrect predictions for cats decreased by 2, and for dogs, it decreased by 52 when using Model B compared to Model A. This suggests that the addition of SRGAN-generated images improved the classifier's ability to correctly identify both classes, particularly for the dog category.
+- The validation metrics, including accuracy, F1 score, and AUC, were closely aligned between the two models, but Model B consistently outperformed Model A. This indicates that while the improvements may not be drastic, they are consistent across different evaluation metrics, further emphasizing the utility of SRGAN-generated images in improving model performance.
 
 ## Conclusion
 
-The SRGAN-generated images improved the binary classification performance. This demonstrates the potential of using GAN-generated high-resolution images to enhance model training, especially in cases where high-quality images are not readily available.
+The SRGAN-generated images improved the binary classification performance. This demonstrates the potential of using GAN-generated high-resolution images to enhance model training, especially in cases where high-quality images are not readily available. The consistent improvement across different metrics—accuracy, F1 score, AUC, and the confusion matrix—supports the conclusion that the use of SRGAN can effectively enhance classification tasks.
 
 The complete implementation and results can be reproduced using the provided code and documentation. The training scripts, validation scripts, and all required configuration files are available in this repository.
-
