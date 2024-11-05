@@ -1,5 +1,7 @@
 # Applied AI Midterm Exam: Super Resolution GAN (SRGAN) Implementation
 
+Model Files Folder(Models): The trained models for this project are available [here](https://drive.google.com/drive/folders/1jSthFVqBBslAtewAPHvz8z-jzTJB1PLl?usp=sharing).
+
 This project is part of the Midterm Exam for Applied AI. It aims to implement a Super Resolution Generative Adversarial Network (SRGAN) to enhance low-resolution images and subsequently use them in a binary classification problem for cat and dog images. The final model's performance is compared with a baseline model.
 
 ## Introduction: Super Resolution GAN (SRGAN)
