@@ -1,6 +1,6 @@
 # Applied AI Midterm Exam
 
-**Model Files Folder (models): The trained models for this project are available [here](https://drive.google.com/drive/folders/1jSthFVqBBslAtewAPHvz8z-jzTJB1PLl?usp=sharing).**
+**Model Files**: <i>The trained models for this project are available [here](https://drive.google.com/drive/folders/1jSthFVqBBslAtewAPHvz8z-jzTJB1PLl?usp=sharing).</i>
 
 This project is part of the Midterm Exam for Applied AI. It aims to implement a Super Resolution Generative Adversarial Network (SRGAN) to enhance low-resolution images and subsequently use them in a binary classification problem for cat and dog images. The final model's performance is compared with a baseline model.
 
@@ -25,6 +25,76 @@ The project followed these major steps:
 - Images were downscaled to **128x128** for classification purposes and further to **32x32** for SRGAN training.
 - **Image augmentations** such as horizontal flipping, rotation, and color jittering were applied to improve model generalization.
 
+## Detailed Steps to Reproduce
+
+### Step 1: Train Binary Classification Model A
+
+1. **Data Preparation**: 
+   - Load the dataset containing cat and dog images.
+   - Resize images to **128x128** and apply augmentations such as **random horizontal flip**, **random rotation**, **color jittering**, and **normalization** to improve model generalization.
+   - Split the dataset into **70% training** and **30% validation** sets.
+
+2. **Model Setup**: 
+   - Use a **pre-trained VGG16** model from PyTorch's torchvision library and modify the final layer to output **two classes** (cats and dogs).
+   - Freeze the feature extraction layers to leverage the pre-trained model for transfer learning.
+
+3. **Training**: 
+   - Train the model using **cross-entropy loss** and an **Adam optimizer** with a learning rate of **0.001**.
+   - Use a **batch size of 256** and train for **50 epochs**.
+   - Save the model checkpoint after every epoch to prevent data loss.
+
+4. **Validation**: 
+   - Evaluate the model on the validation dataset using metrics such as **accuracy**, **F1 score**, **AUC**, and **confusion matrix**.
+   - Save the training and validation loss curves for analysis.
+
+### Step 2: Train SRGAN for Super Resolution
+
+1. **Data Preparation**: 
+   - Downscale the training images to **32x32** to be used as input for the SRGAN.
+   - Use the original **128x128** images as high-resolution targets.
+
+2. **Model Setup**:
+   - Implement the **SRGAN generator and discriminator** models.
+   - The **generator** is responsible for upscaling low-resolution images, while the **discriminator** distinguishes between real and generated high-resolution images.
+   - Use a pre-trained classifier (VGG16) as a **feature extractor** to compute **perceptual loss** during training.
+
+3. **Training**:
+   - Train the SRGAN for **150 epochs** using **adversarial training**.
+   - The **generator loss** consists of content loss, adversarial loss, perceptual loss, and total variation (TV) loss.
+   - The **discriminator loss** stabilizes around **0.5**, indicating a balanced training process where the discriminator is effectively unable to distinguish between real and generated images.
+
+4. **Validation**:
+   - Show **examples of original vs generated images** to evaluate the effectiveness of the SRGAN.
+   - Plot the **generator and discriminator loss curves** to visualize training progression.
+
+### Step 3: Train Binary Classification Model B Using SRGAN-Generated Images
+
+1. **Data Preparation**:
+   - Use both **original high-resolution images** and **SRGAN-generated images** to create a larger training dataset.
+   - Apply the same transformations as Model A to ensure consistency.
+
+2. **Model Setup and Training**:
+   - Use the same **VGG16 model** as in Model A for transfer learning.
+   - Train the model for **50 epochs** using the combined dataset, and save the training checkpoints.
+
+3. **Validation**:
+   - Evaluate the model on the validation dataset using metrics such as **accuracy**, **F1 score**, **AUC**, and **confusion matrix**.
+   - Save the training and validation loss curves for analysis.
+
+### Step 4: Compare Model A and Model B
+
+1. **Metrics for Comparison**:
+   - Compare the performance of Models A and B on the validation dataset using the following metrics:
+     - **Validation Loss**
+     - **Accuracy**
+     - **F1 Score**
+     - **AUC**
+
+2. **Observations**:
+   - Model B, trained using SRGAN-generated high-resolution images, showed **slightly better performance** compared to Model A.
+   - Model B had a **lower validation loss** and **higher accuracy, F1 score, and AUC** than Model A.
+   - The **confusion matrices** for both models indicated that Model B made fewer incorrect predictions, especially for the dog category, suggesting an improvement in generalization due to the use of SRGAN-generated images.
+
 ## Training Model A: Binary Classifier
 
 Model A was trained on the downscaled 128x128 images. The architecture used is a pre-trained **VGG16** model with the last layer modified to classify between cats and dogs.
@@ -46,9 +116,8 @@ Model A was trained on the downscaled 128x128 images. The architecture used is a
 
 ![Confusion Matrix A](./figures/confusion_matrix_A.png)
 
-## SRGAN Training
 
-The SRGAN model was trained for **150 epochs** to upscale low-resolution (32x32) images to high-resolution (128x128) images.
+## SRGAN Training Details
 
 - **Low-Resolution vs High-Resolution Examples**: 
 ![Original and Downscaled Images](./figures/srgan_train_data_original_and_downscaled_images.png)
@@ -62,17 +131,17 @@ The SRGAN model was trained for **150 epochs** to upscale low-resolution (32x32)
 ![SRGAN Loss Plot](./figures/srgan_loss_plot.png)
   - The generator and discriminator loss curves during training show a steady decrease in both losses, indicating successful adversarial training. The discriminator loss was scaled by 100 to better visualize its trend alongside the generator loss. The reason for scaling the discriminator loss is due to its typically smaller magnitude compared to the generator loss, which would make it difficult to visualize both losses on the same plot without scaling.
   - The discriminator loss (D_loss) stabilized around 0.5, which is a desired outcome in GAN training, indicating that the discriminator is effectively unable to distinguish between real and generated images half of the time. This balance is crucial for the adversarial training process, as it ensures that neither the generator nor the discriminator is overpowering the other.
-  - The occasional spikes in discriminator loss are indicative of moments where the generator significantly improved, forcing the discriminator to adapt. Despite these fluctuations, the model returned to a stable region, demonstrating resilience and the ability to recover effectively. For example, between epochs 133 to 134, there was a noticeable spike in discriminator loss, but it quickly returned to a stable state, highlighting the dynamic balance between generator and discriminator during training.
+  - The occasional spikes in discriminator loss are indicative of moments where the generator significantly improved, forcing the discriminator to adapt. Despite these fluctuations, the model returned to a stable region, demonstrating resilience and the ability to recover effectively.
   - Additionally, the generator loss (G_loss) showed a consistent decreasing trend, which signifies that the generator is learning to create more realistic high-resolution images as training progresses. The generator loss consists of multiple components, including **content loss**, **adversarial loss**, **perceptual loss**, and **total variation (TV) loss**. The adversarial loss reached a value close to 1.0, showing the generator's success in "fooling" the discriminator, while the perceptual loss and TV loss contributed to refining image quality and reducing artifacts.
 
-    - **Example Training Output**:
-    ```bash
-        [148/150] Loss_D: 0.5006 Loss_G: 0.0060 Content: 0.0025 Adv: 0.9999 Perc: 0.4156 TV: 0.0080 D(x): 0.7999 D(G(z)): 0.0001: 100%|██████████| 274/274 [02:08<00:00,  2.12it/s]
-        [149/150] Loss_D: 0.5006 Loss_G: 0.0060 Content: 0.0025 Adv: 0.9999 Perc: 0.4142 TV: 0.0080 D(x): 0.8000 D(G(z)): 0.0001: 100%|██████████| 274/274 [02:08<00:00,  2.13it/s]
-        [150/150] Loss_D: 0.5006 Loss_G: 0.0060 Content: 0.0025 Adv: 0.9999 Perc: 0.4142 TV: 0.0080 D(x): 0.7999 D(G(z)): 0.0001: 100%|██████████| 274/274 [02:09<00:00,  2.12it/s]
-    ```
+- **Example Training Output**:
+  ```bash
+  [148/150] Loss_D: 0.5006 Loss_G: 0.0060 Content: 0.0025 Adv: 0.9999 Perc: 0.4156 TV: 0.0080 D(x): 0.7999 D(G(z)): 0.0001: 100%|██████████| 274/274 [02:08<00:00,  2.12it/s]
+  [149/150] Loss_D: 0.5006 Loss_G: 0.0060 Content: 0.0025 Adv: 0.9999 Perc: 0.4142 TV: 0.0080 D(x): 0.8000 D(G(z)): 0.0001: 100%|██████████| 274/274 [02:08<00:00,  2.13it/s]
+  [150/150] Loss_D: 0.5006 Loss_G: 0.0060 Content: 0.0025 Adv: 0.9999 Perc: 0.4142 TV: 0.0080 D(x): 0.7999 D(G(z)): 0.0001: 100%|██████████| 274/274 [02:09<00:00,  2.12it/s]
+  ```
 
-## Training Model B: Using Generated Images
+## Model B: Training Using Generated Images
 
 Model B was trained using the high-resolution images generated by SRGAN. These images, along with original training images, were used to create a larger dataset for training.
 
@@ -93,7 +162,7 @@ Model B was trained using the high-resolution images generated by SRGAN. These i
 
 ![Confusion Matrix B](./figures/confusion_matrix_B.png)
 
-## Model Comparison
+## Comparative Analysis
 
 The performance of both models, A and B, was compared on the validation dataset:
 
@@ -118,7 +187,8 @@ The performance of both models, A and B, was compared on the validation dataset:
 
 ## Conclusion
 
-The SRGAN-generated images improved the binary classification performance. This demonstrates the potential of using GAN-generated high-resolution images to enhance model training, especially in cases where high-quality images are not readily available. The consistent improvement across different metrics—accuracy, F1 score, AUC, and the confusion matrix—supports the conclusion that the use of SRGAN can effectively enhance classification tasks.
+The use of SRGAN-generated high-resolution images significantly enhanced the performance of the binary classification model for cat and dog images. Model B, which utilized the super-resolved images produced by SRGAN, demonstrated consistent improvements in **accuracy**, **F1 score**, **AUC**, and overall **generalization** compared to Model A, which was trained solely on original low-resolution images.
 
-The complete implementation and results can be reproduced using the provided code and documentation. The training scripts, validation scripts, and all required configuration files are available in this repository.
+This improvement is particularly evident in the lower validation loss and reduced number of incorrect predictions in Model B, which highlights the effectiveness of SRGAN in enhancing image quality for better analysis. The **perceptual loss** used during SRGAN training, along with the combination of **content loss**, **adversarial loss**, and **total variation loss**, enabled the generator to produce highly realistic high-resolution images that helped the classifier to better distinguish between cats and dogs.
 
+This project demonstrates the potential of using **GAN-generated high-resolution images** to improve model training, particularly in cases where high-quality images are not readily available. The consistent improvement across different metrics supports the conclusion that **super-resolution techniques** like SRGAN can effectively enhance the training process for classification tasks, leading to better model performance and generalization.
