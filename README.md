@@ -63,8 +63,12 @@ The SRGAN model was trained for **150 epochs** to upscale low-resolution (32x32)
   - The occasional spikes in discriminator loss are indicative of moments where the generator significantly improved, forcing the discriminator to adapt. Despite these fluctuations, the model returned to a stable region, demonstrating resilience and the ability to recover effectively. For example, between epochs 133 to 134, there was a noticeable spike in discriminator loss, but it quickly returned to a stable state, highlighting the dynamic balance between generator and discriminator during training.
   - Additionally, the generator loss (G_loss) showed a consistent decreasing trend, which signifies that the generator is learning to create more realistic high-resolution images as training progresses. The generator loss consists of multiple components, including **content loss**, **adversarial loss**, **perceptual loss**, and **total variation (TV) loss**. The adversarial loss reached a value close to 1.0, showing the generator's success in "fooling" the discriminator, while the perceptual loss and TV loss contributed to refining image quality and reducing artifacts.
 
-  - **Example Training Output**:
-    - At epoch 125, the discriminator loss was **0.5005**, and the generator loss was **0.0061**. The content loss was **0.0025**, adversarial loss was **1.0000**, perceptual loss was **0.4338**, and total variation loss was **0.0079**. The discriminator accuracy for real images, **D(x)**, was **0.8000**, and the discriminator's confidence in the generated images, **D(G(z))**, was **0.0000**. This output indicates a well-balanced adversarial setting where the generator is effectively challenging the discriminator, and the discriminator is being continually pushed to adapt.
+    - **Example Training Output**:
+    ```bash
+        [148/150] Loss_D: 0.5006 Loss_G: 0.0060 Content: 0.0025 Adv: 0.9999 Perc: 0.4156 TV: 0.0080 D(x): 0.7999 D(G(z)): 0.0001: 100%|██████████| 274/274 [02:08<00:00,  2.12it/s]
+        [149/150] Loss_D: 0.5006 Loss_G: 0.0060 Content: 0.0025 Adv: 0.9999 Perc: 0.4142 TV: 0.0080 D(x): 0.8000 D(G(z)): 0.0001: 100%|██████████| 274/274 [02:08<00:00,  2.13it/s]
+        [150/150] Loss_D: 0.5006 Loss_G: 0.0060 Content: 0.0025 Adv: 0.9999 Perc: 0.4142 TV: 0.0080 D(x): 0.7999 D(G(z)): 0.0001: 100%|██████████| 274/274 [02:09<00:00,  2.12it/s]
+    ```
 
 ## Training Model B: Using Generated Images
 
