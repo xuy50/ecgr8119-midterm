@@ -28,40 +28,43 @@ The project followed these major steps:
 Model A was trained on the downscaled 128x128 images. The architecture used is a pre-trained **VGG16** model with the last layer modified to classify between cats and dogs.
 
 - **Transformations Applied**: Resize to 128x128, random horizontal flip, rotation within 15 degrees, color jitter, and normalization.
-
 - **Training and Validation Loss**:
 
-    ![Training and Validation Loss](./figures/training_validation_loss_A.png)
+![Training and Validation Loss](./figures/training_validation_loss_A.png)
 
-- **Validation Metrics**:
+- **Validation Metrics**: 
 
-    ![Validation Metrics](./figures/validation_metrics_A.png)
+![Validation Metrics](./figures/validation_metrics_A.png)
 
 - **Validation Predictions**: 
 
-    ![Validation Predictions](./figures/validation_predictions_A.png)
+![Validation Predictions](./figures/validation_predictions_A.png)
 
 - **Confusion Matrix**: 
 
-    ![Confusion Matrix A](./figures/confusion_matrix_A.png)
-
+![Confusion Matrix A](./figures/confusion_matrix_A.png)
 
 ## SRGAN Training
 
 The SRGAN model was trained for **150 epochs** to upscale low-resolution (32x32) images to high-resolution (128x128) images.
 
 - **Low-Resolution vs High-Resolution Examples**: 
+![Original and Downscaled Images](./figures/srgan_train_data_original_and_downscaled_images.png)
   - These images showcase the difference between the original high-resolution images and their downscaled versions used for SRGAN training. The downscaled images are clearly lower in quality, with significant loss of details, whereas the high-resolution images retain much more texture and clarity. This contrast emphasizes the importance of super-resolution techniques in restoring visual quality for better analysis.
-    ![Original and Downscaled Images](./figures/srgan_train_data_original_and_downscaled_images.png)
 
-- **Validation Sample Results**:
+- **Validation Sample Results**: 
+![Validation Samples](./figures/srgan_validation_sample_images.png)
   - The validation samples demonstrate the effectiveness of SRGAN in restoring the high-resolution features of the images. The super-resolved output closely resembles the ground truth high-resolution images, preserving crucial details such as fur texture, facial features, and overall sharpness. The comparison between low-resolution inputs, SRGAN-generated outputs, and high-resolution ground truths highlights how SRGAN improves visual quality significantly, making it valuable for subsequent tasks like classification.
-    ![Validation Samples](./figures/srgan_validation_sample_images.png)
 
-- **Generator and Discriminator Loss Plot**:
-  - The generator and discriminator loss curves during training show a steady decrease in both losses, indicating successful adversarial training. The discriminator loss was scaled by 100 to better visualize its trend alongside the generator loss. The consistent decrease in generator loss signifies the improvement in generating realistic high-resolution images over time. The occasional spikes in discriminator loss are indicative of moments where the generator significantly improved, forcing the discriminator to adapt.
-    ![SRGAN Loss Plot](./figures/srgan_loss_plot.png)
+- **Generator and Discriminator Loss Plot**: 
+![SRGAN Loss Plot](./figures/srgan_loss_plot.png)
+  - The generator and discriminator loss curves during training show a steady decrease in both losses, indicating successful adversarial training. The discriminator loss was scaled by 100 to better visualize its trend alongside the generator loss. The reason for scaling the discriminator loss is due to its typically smaller magnitude compared to the generator loss, which would make it difficult to visualize both losses on the same plot without scaling.
+  - The discriminator loss (D_loss) stabilized around 0.5, which is a desired outcome in GAN training, indicating that the discriminator is effectively unable to distinguish between real and generated images half of the time. This balance is crucial for the adversarial training process, as it ensures that neither the generator nor the discriminator is overpowering the other.
+  - The occasional spikes in discriminator loss are indicative of moments where the generator significantly improved, forcing the discriminator to adapt. Despite these fluctuations, the model returned to a stable region, demonstrating resilience and the ability to recover effectively. For example, between epochs 133 to 134, there was a noticeable spike in discriminator loss, but it quickly returned to a stable state, highlighting the dynamic balance between generator and discriminator during training.
+  - Additionally, the generator loss (G_loss) showed a consistent decreasing trend, which signifies that the generator is learning to create more realistic high-resolution images as training progresses. The generator loss consists of multiple components, including **content loss**, **adversarial loss**, **perceptual loss**, and **total variation (TV) loss**. The adversarial loss reached a value close to 1.0, showing the generator's success in "fooling" the discriminator, while the perceptual loss and TV loss contributed to refining image quality and reducing artifacts.
 
+  - **Example Training Output**:
+    - At epoch 125, the discriminator loss was **0.5005**, and the generator loss was **0.0061**. The content loss was **0.0025**, adversarial loss was **1.0000**, perceptual loss was **0.4338**, and total variation loss was **0.0079**. The discriminator accuracy for real images, **D(x)**, was **0.8000**, and the discriminator's confidence in the generated images, **D(G(z))**, was **0.0000**. This output indicates a well-balanced adversarial setting where the generator is effectively challenging the discriminator, and the discriminator is being continually pushed to adapt.
 
 ## Training Model B: Using Generated Images
 
@@ -112,3 +115,4 @@ The performance of both models, A and B, was compared on the validation dataset:
 The SRGAN-generated images improved the binary classification performance. This demonstrates the potential of using GAN-generated high-resolution images to enhance model training, especially in cases where high-quality images are not readily available. The consistent improvement across different metrics—accuracy, F1 score, AUC, and the confusion matrix—supports the conclusion that the use of SRGAN can effectively enhance classification tasks.
 
 The complete implementation and results can be reproduced using the provided code and documentation. The training scripts, validation scripts, and all required configuration files are available in this repository.
+
