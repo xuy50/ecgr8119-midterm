@@ -1,6 +1,6 @@
 # Applied AI Midterm Exam
 
-**Model Files**: The trained models for this project are available [here](https://drive.google.com/drive/folders/1jSthFVqBBslAtewAPHvz8z-jzTJB1PLl?usp=sharing).
+**Model Files**: <i>The trained models for this project are available [here](https://drive.google.com/drive/folders/1jSthFVqBBslAtewAPHvz8z-jzTJB1PLl?usp=sharing).</i>
 
 This project is part of the Midterm Exam for Applied AI. It aims to implement a Super Resolution Generative Adversarial Network (SRGAN) to enhance low-resolution images and subsequently use them in a binary classification problem for cat and dog images. The final model's performance is compared with a baseline model.
 
@@ -94,6 +94,28 @@ The project followed these major steps:
    - Model B, trained using SRGAN-generated high-resolution images, showed **slightly better performance** compared to Model A.
    - Model B had a **lower validation loss** and **higher accuracy, F1 score, and AUC** than Model A.
    - The **confusion matrices** for both models indicated that Model B made fewer incorrect predictions, especially for the dog category, suggesting an improvement in generalization due to the use of SRGAN-generated images.
+
+## Training Model A: Binary Classifier
+
+Model A was trained on the downscaled 128x128 images. The architecture used is a pre-trained **VGG16** model with the last layer modified to classify between cats and dogs.
+
+- **Transformations Applied**: Resize to 128x128, random horizontal flip, rotation within 15 degrees, color jitter, and normalization.
+- **Training and Validation Loss**:
+
+![Training and Validation Loss](./figures/training_validation_loss_A.png)
+
+- **Validation Metrics**: 
+
+![Validation Metrics](./figures/validation_metrics_A.png)
+
+- **Validation Predictions**: 
+
+![Validation Predictions](./figures/validation_predictions_A.png)
+
+- **Confusion Matrix**: 
+
+![Confusion Matrix A](./figures/confusion_matrix_A.png)
+
 
 ## SRGAN Training Details
 
